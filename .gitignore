@@ -1,0 +1,7 @@
+node_modules
+.nvmrc
+.vscode
+.env
+uploads/products/**.*
+uploads/images/**.*
+uploads/users/**.*
