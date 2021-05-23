@@ -2,11 +2,15 @@ const express = require('express');
 const cors = require('cors');
 const colors = require('colors/safe');
 const fileUpload = require('express-fileupload');
+const { createServer } = require('http');
 const { dbConnection } = require('./database/config');
+const { socketController } = require('./sockets/controller');
 class Server {
     constructor() {
         this.app = express();
         this.port = process.env.PORT;
+        this.server = createServer(this.app);
+        this.io = require('socket.io')(this.server);
 
         this.paths = {
             auth: '/api/auth',
@@ -20,11 +24,14 @@ class Server {
         // DB connection
         this.connectDB();
 
-        // middlewares
+        // Middlewares
         this.middlewares();
 
-        //routes of my app
+        // Routes of my app
         this.routes();
+
+        // Sockets
+        this.sockets();
     }
 
     async connectDB() {
@@ -60,8 +67,12 @@ class Server {
         this.app.use(this.paths.users, require('./routes/users'));
     }
 
+    sockets() {
+        this.io.on('connection', socketController);
+    }
+
     listen() {
-        this.app.listen(this.port, () => {
+        this.server.listen(this.port, () => {
             console.log(colors.cyan('Server running on port', this.port));
         });
     }
