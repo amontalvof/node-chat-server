@@ -1,9 +1,16 @@
-let user = null;
-let socket = null;
-
 const url = window.location.hostname.includes('localhost')
     ? 'http://localhost:8080/api/auth/'
     : 'https://am-node-restserver.herokuapp.com/api/auth/';
+
+let user = null;
+let socket = null;
+
+// HTML REFERENCES
+const txtUid = document.querySelector('#txtUid');
+const txtMessage = document.querySelector('#txtMessage');
+const ulUsers = document.querySelector('#ulUsers');
+const ulMessages = document.querySelector('#ulMessages');
+const btnLogout = document.querySelector('#btnLogout');
 
 const validateJWT = async () => {
     const token = localStorage.getItem('token') || '';
@@ -23,10 +30,30 @@ const validateJWT = async () => {
 };
 
 const connectSocket = async () => {
-    const socket = io({
+    socket = io({
         extraHeaders: {
             'x-token': localStorage.getItem('token'),
         },
+    });
+
+    socket.on('connect', () => {
+        console.log('Socket online');
+    });
+
+    socket.on('disconnect', () => {
+        console.log('Socket offline');
+    });
+
+    socket.on('receive-message', () => {
+        // TODO:
+    });
+
+    socket.on('active-users', () => {
+        // TODO:
+    });
+
+    socket.on('private-message', () => {
+        // TODO:
     });
 };
 
