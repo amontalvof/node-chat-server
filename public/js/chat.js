@@ -44,8 +44,8 @@ const connectSocket = async () => {
         console.log('Socket offline');
     });
 
-    socket.on('receive-message', () => {
-        // TODO:
+    socket.on('receive-message', (payload) => {
+        console.log(payload);
     });
 
     socket.on('active-users', showUsers);
@@ -70,6 +70,19 @@ const showUsers = (users = []) => {
 
     ulUsers.innerHTML = usersHtml;
 };
+
+txtMessage.addEventListener('keyup', ({ keyCode }) => {
+    const message = txtMessage.value;
+    const uid = txtUid.value;
+    if (keyCode !== 13) {
+        return;
+    }
+    if (message.length === 0) {
+        return;
+    }
+    socket.emit('send-message', { message, uid });
+    txtMessage.value = '';
+});
 
 const main = async () => {
     await validateJWT();
