@@ -44,9 +44,7 @@ const connectSocket = async () => {
         console.log('Socket offline');
     });
 
-    socket.on('receive-message', (payload) => {
-        console.log(payload);
-    });
+    socket.on('receive-message', showMessages);
 
     socket.on('active-users', showUsers);
 
@@ -69,6 +67,21 @@ const showUsers = (users = []) => {
     });
 
     ulUsers.innerHTML = usersHtml;
+};
+const showMessages = (messages = []) => {
+    let messagesHtml = '';
+    messages.forEach(({ name, message }) => {
+        messagesHtml += `
+            <li>
+                <p>
+                    <span class="text-primary">${name}: </span>
+                    <span >${message}</span>
+                </p>
+            </li>
+        `;
+    });
+
+    ulMessages.innerHTML = messagesHtml;
 };
 
 txtMessage.addEventListener('keyup', ({ keyCode }) => {
